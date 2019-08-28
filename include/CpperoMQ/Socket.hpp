@@ -1,7 +1,7 @@
 // The MIT License (MIT)
 //
 // Copyright (c) 2015 Jason Shipman
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
 // deal in the Software without restriction, including without limitation the
@@ -46,8 +46,9 @@ public:
 
     auto connect(const char* address) -> void;
     auto disconnect(const char* address) -> void;
-    
+
     auto getBacklog() const                                 -> int;
+    auto getFileDescriptor() const                          -> int;
     auto getHandshakeInterval() const                       -> int;
     auto getImmediate() const                               -> bool;
     auto getIoThreadAffinity() const                        -> uint64_t;
@@ -69,7 +70,7 @@ public:
     auto setReconnectInterval(const int milliseconds)         -> void;
 
     explicit operator void*();
-    
+
 protected:
     Socket(void* context, int type);
     Socket(Socket&& other);
@@ -173,6 +174,12 @@ auto Socket::getBacklog() const -> int
 }
 
 inline
+auto Socket::getFileDescriptor() const -> int
+{
+    return (getSocketOption<int>(ZMQ_FD));
+}
+
+inline
 auto Socket::getHandshakeInterval() const -> int
 {
     return (getSocketOption<int>(ZMQ_HANDSHAKE_IVL));
@@ -234,7 +241,7 @@ auto Socket::setBacklog(const int backlog) -> void
     setSocketOption(ZMQ_BACKLOG, backlog);
 }
 
-inline 
+inline
 auto Socket::setHandshakeInterval(const int milliseconds) -> void
 {
     setSocketOption(ZMQ_HANDSHAKE_IVL, milliseconds);
